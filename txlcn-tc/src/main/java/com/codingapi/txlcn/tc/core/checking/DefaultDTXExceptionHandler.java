@@ -73,7 +73,10 @@ public class DefaultDTXExceptionHandler implements DTXExceptionHandler {
         } catch (TransactionClearException e) {
             log.error("{} > clean transaction error.", unitType);
             txLogger.error(this.getClass().getSimpleName(), "clean transaction fail.");
-        }
+        }  catch (CommitLocalTransactionException e) {
+        	log.error("{} > clean transaction error.", unitType);
+            txLogger.error(this.getClass().getSimpleName(), "clean transaction fail.");
+		}
         throw new TransactionException(ex);
     }
 
@@ -103,7 +106,9 @@ public class DefaultDTXExceptionHandler implements DTXExceptionHandler {
             transactionCleanTemplate.clean(groupId, unitId, transactionType, state);
         } catch (TransactionClearException e) {
             log.error("{} > clean transaction error.", transactionType);
-        }
+        } catch (CommitLocalTransactionException e) {
+        	log.error("{} > clean transaction error.", transactionType);
+		}
     }
 
     @Override
@@ -133,9 +138,28 @@ public class DefaultDTXExceptionHandler implements DTXExceptionHandler {
             transactionCleanTemplate.compensationClean(groupId, unitId, transactionType, state);
         } catch (TransactionClearException e) {
             log.error("{} > compensationClean transaction error.", transactionType);
-        }
+        } catch (CommitLocalTransactionException e) {
+        	log.error("{} > compensationClean transaction error.", transactionType);
+		}
 
         // 上报Manager，上报直到成功.
         txMangerReporter.reportTransactionState(groupId, null, TxExceptionParams.NOTIFY_GROUP_ERROR, state);
+    }
+    
+    @Override
+    public void commitLocalTXException(Object params, Throwable ex) {
+    	// 当0 时候
+        List paramList = (List) params;
+        String groupId = (String) paramList.get(0);
+        int state = (int) paramList.get(1);
+        if (state == 0) {
+            handleNotifyGroupBusinessException(params, ex);
+            return;
+        }
+        String unitId = (String) paramList.get(2);
+        String transactionType = (String) paramList.get(3);
+     // 上报Manager，上报直到成功.
+        Short p = 4;//发起方本地事务异常
+        txMangerReporter.reportTransactionState(groupId, null, p, state);
     }
 }

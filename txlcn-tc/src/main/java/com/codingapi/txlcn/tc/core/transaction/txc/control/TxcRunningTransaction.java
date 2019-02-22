@@ -15,6 +15,7 @@
  */
 package com.codingapi.txlcn.tc.core.transaction.txc.control;
 
+import com.codingapi.txlcn.common.exception.CommitLocalTransactionException;
 import com.codingapi.txlcn.common.exception.TransactionClearException;
 import com.codingapi.txlcn.common.exception.TransactionException;
 import com.codingapi.txlcn.common.exception.TxClientException;
@@ -67,7 +68,10 @@ public class TxcRunningTransaction implements DTXLocalControl {
         } catch (TransactionClearException e) {
             log.error("txc > Clean Transaction Error", e);
             txLogger.trace(info.getGroupId(), info.getUnitId(), Transactions.TE, "clean transaction error");
-        }
+        } catch (CommitLocalTransactionException e) {
+        	log.error("txc > Clean Transaction Error", e);
+            txLogger.trace(info.getGroupId(), info.getUnitId(), Transactions.TE, "clean transaction error");
+		}
     }
 
     @Override

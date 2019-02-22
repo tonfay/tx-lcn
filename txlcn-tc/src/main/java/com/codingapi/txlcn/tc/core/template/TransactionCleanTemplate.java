@@ -18,6 +18,7 @@ package com.codingapi.txlcn.tc.core.template;
 import com.codingapi.txlcn.tc.corelog.aspect.AspectLogger;
 import com.codingapi.txlcn.tc.support.TxLcnBeanHelper;
 import com.codingapi.txlcn.tc.core.checking.DTXChecking;
+import com.codingapi.txlcn.common.exception.CommitLocalTransactionException;
 import com.codingapi.txlcn.common.exception.TransactionClearException;
 import com.codingapi.txlcn.common.util.Transactions;
 import com.codingapi.txlcn.logger.TxLogger;
@@ -67,7 +68,7 @@ public class TransactionCleanTemplate {
      * @param state    transactionState
      * @throws TransactionClearException TransactionClearException
      */
-    public void clean(String groupId, String unitId, String unitType, int state) throws TransactionClearException {
+    public void clean(String groupId, String unitId, String unitType, int state) throws TransactionClearException,CommitLocalTransactionException {
         txLogger.transactionInfo(groupId, unitId, "clean transaction");
         try {
             transactionBeanHelper.loadTransactionCleanService(unitType).clear(
@@ -92,7 +93,7 @@ public class TransactionCleanTemplate {
      * @param state    transactionState
      * @throws TransactionClearException TransactionClearException
      */
-    public void compensationClean(String groupId, String unitId, String unitType, int state) throws TransactionClearException {
+    public void compensationClean(String groupId, String unitId, String unitType, int state) throws TransactionClearException,CommitLocalTransactionException {
         txLogger.transactionInfo(groupId, unitId, "clean compensation transaction");
         try {
             transactionBeanHelper.loadTransactionCleanService(unitType).clear(

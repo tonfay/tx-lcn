@@ -147,17 +147,24 @@ public class TransactionControlTemplate {
                 throw new LcnBusinessException("dtx timeout.");
             }
             reliableMessenger.notifyGroup(groupId, state);
+//            if(1==1) {
+//            	throw new LcnBusinessException("dtx timeout.");
+//            }
             transactionCleanTemplate.clean(groupId, unitId, transactionType, state);
             log.debug("{} > close transaction group.", transactionType);
         } catch (TransactionClearException e) {
             log.error("clear exception", e);
             txLogger.trace(groupId, unitId, Transactions.TE, "clean transaction fail.");
+            
         } catch (RpcException e) {
             dtxExceptionHandler.handleNotifyGroupMessageException(Arrays.asList(groupId, state, unitId, transactionType), e);
         } catch (LcnBusinessException e) {
             // 关闭事务组失败
             dtxExceptionHandler.handleNotifyGroupBusinessException(Arrays.asList(groupId, state, unitId, transactionType), e.getCause());
-        }
+        } catch(CommitLocalTransactionException e) {
+        	//通知txm 提交本地事务异常
+            dtxExceptionHandler.commitLocalTXException(Arrays.asList(groupId, state, unitId, transactionType), e.getCause());
+        } 
         txLogger.transactionInfo(groupId, unitId, "notify group exception state {}.", state);
     }
 }

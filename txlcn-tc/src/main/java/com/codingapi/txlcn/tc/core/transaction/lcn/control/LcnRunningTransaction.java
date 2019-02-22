@@ -15,6 +15,7 @@
  */
 package com.codingapi.txlcn.tc.core.transaction.lcn.control;
 
+import com.codingapi.txlcn.common.exception.CommitLocalTransactionException;
 import com.codingapi.txlcn.common.exception.TransactionClearException;
 import com.codingapi.txlcn.common.exception.TransactionException;
 import com.codingapi.txlcn.common.exception.TxClientException;
@@ -63,7 +64,9 @@ public class LcnRunningTransaction implements DTXLocalControl {
             transactionCleanTemplate.clean(info.getGroupId(), info.getUnitId(), info.getTransactionType(), 0);
         } catch (TransactionClearException e) {
             log.error("{} > clean transaction error." , Transactions.LCN);
-        }
+        } catch (CommitLocalTransactionException e) {
+        	log.error("{} > clean transaction error." , Transactions.LCN);
+		}
     }
     
     

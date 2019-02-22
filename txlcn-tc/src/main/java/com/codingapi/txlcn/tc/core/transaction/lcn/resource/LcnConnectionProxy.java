@@ -15,7 +15,11 @@
  */
 package com.codingapi.txlcn.tc.core.transaction.lcn.resource;
 
+import com.codingapi.txlcn.common.exception.CommitLocalTransactionException;
+import com.codingapi.txlcn.common.exception.TCGlobalContextException;
 import com.codingapi.txlcn.txmsg.dto.RpcResponseState;
+import com.zaxxer.hikari.pool.HikariProxyConnection;
+
 import lombok.extern.slf4j.Slf4j;
 
 import java.sql.*;
@@ -40,8 +44,9 @@ public class LcnConnectionProxy implements Connection {
      *
      * @param state transactionState
      * @return RpcResponseState RpcResponseState
+     * @throws TCGlobalContextException 
      */
-    public RpcResponseState notify(int state) {
+    public RpcResponseState notify(int state) throws CommitLocalTransactionException {
         try {
             if (state == 1) {
                 log.debug("commit transaction type[lcn] proxy connection:{}.", this);
@@ -55,7 +60,8 @@ public class LcnConnectionProxy implements Connection {
             return RpcResponseState.success;
         } catch (Exception e) {
             log.error(e.getLocalizedMessage(), e);
-            return RpcResponseState.fail;
+            throw new CommitLocalTransactionException();
+//            return RpcResponseState.fail;
         }
     }
 

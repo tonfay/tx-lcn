@@ -78,5 +78,12 @@ public interface DTXExceptionHandler {
      * @param ex ex
      */
     void handleNotifyGroupMessageException(Object params, Throwable ex);
+    
+    /**
+     * 提交本地事务异常,通知txm记录
+     * @param params
+     * @param ex
+     */
+    void commitLocalTXException(Object params, Throwable ex);
 
 }

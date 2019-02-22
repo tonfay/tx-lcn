@@ -15,6 +15,7 @@
  */
 package com.codingapi.txlcn.tc.txmsg.transaction;
 
+import com.codingapi.txlcn.common.exception.CommitLocalTransactionException;
 import com.codingapi.txlcn.common.exception.TransactionClearException;
 import com.codingapi.txlcn.common.exception.TxClientException;
 import com.codingapi.txlcn.common.util.Transactions;
@@ -70,7 +71,7 @@ public class DefaultNotifiedUnitService implements RpcExecuteService {
                     notifyUnitParams.getUnitType(),
                     notifyUnitParams.getState());
             return true;
-        } catch (TransactionClearException | InterruptedException e) {
+        } catch (TransactionClearException | CommitLocalTransactionException | InterruptedException e) {
             throw new TxClientException(e);
         }
     }

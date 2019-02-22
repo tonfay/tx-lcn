@@ -15,6 +15,7 @@
  */
 package com.codingapi.txlcn.tc.core.checking;
 
+import com.codingapi.txlcn.common.exception.CommitLocalTransactionException;
 import com.codingapi.txlcn.common.exception.TransactionClearException;
 import com.codingapi.txlcn.common.util.Transactions;
 import com.codingapi.txlcn.logger.TxLogger;
@@ -106,9 +107,9 @@ public class SimpleDTXChecking implements DTXChecking, DisposableBean {
 
             } catch (RpcException e) {
                 onAskTransactionStateException(groupId, unitId, transactionType);
-            } catch (TransactionClearException | InterruptedException e) {
+            } catch (TransactionClearException | InterruptedException | CommitLocalTransactionException e) {
                 txLogger.error(this.getClass().getSimpleName(), "{} clean transaction error.", transactionType);
-            }
+            } 
         }, clientConfig.getDtxTime(), TimeUnit.MILLISECONDS);
         delayTasks.put(groupId + unitId, scheduledFuture);
     }
@@ -130,9 +131,9 @@ public class SimpleDTXChecking implements DTXChecking, DisposableBean {
 
             // 事务回滚, 保留适当的补偿信息
             transactionCleanTemplate.compensationClean(groupId, unitId, transactionType, 0);
-        } catch (TransactionClearException e) {
+        } catch (TransactionClearException | CommitLocalTransactionException e) {
             log.error("{} > clean transaction error.", transactionType);
-        }
+        } 
     }
 
     @Override

@@ -15,6 +15,7 @@
  */
 package com.codingapi.txlcn.tc.core;
 
+import com.codingapi.txlcn.common.exception.CommitLocalTransactionException;
 import com.codingapi.txlcn.common.exception.TransactionClearException;
 
 /**
@@ -34,5 +35,5 @@ public interface TransactionCleanService {
      * @param unitType 事务类型
      * @throws TransactionClearException TransactionClearException
      */
-    void clear(String groupId, int state, String unitId, String unitType) throws TransactionClearException;
+    void clear(String groupId, int state, String unitId, String unitType) throws TransactionClearException,CommitLocalTransactionException;
 }
